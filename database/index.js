@@ -1,3 +1,4 @@
+// require("dotenv").config();
 const { Client, Pool } = require("pg");
 
 const pool = new Pool({
@@ -7,3 +8,9 @@ const pool = new Pool({
   port: process.env.DB_PORT,
   database: process.env.DB_NAME,
 });
+
+pool.query(`SELECT * FROM reviews WHERE id = 1`).then((data) => {
+  console.log(data.rows[0]);
+});
+
+module.exports = {};
