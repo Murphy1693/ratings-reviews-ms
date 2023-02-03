@@ -9,13 +9,11 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/reviews", controllers.getReviews);
+app.post("/reviews", controllers.postReview);
 
 app.get("/reviews/meta", controllers.getMeta);
 
-app.post("/reviews", controllers.postReview);
-
 app.put("/reviews/:review_id/report", controllers.reportReview);
-
 app.put("/reviews/:review_id/helpful", controllers.findReviewHelpful);
 
 app.listen(process.env.PORT);

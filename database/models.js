@@ -9,44 +9,31 @@ module.exports = {
     page = 1,
     offset = page * count - count,
   }) => {
-    return pool.query(queryStrings.getReviewsQuery, [
+    return pool.query(queryStrings.getReviewsQuery(sort), [
       product_id,
       count,
       offset,
-      queryStrings.sortQueries[sort],
       page,
     ]);
   },
   getMetaByProductId: (product_id) => {
     return pool.query(queryStrings.getMetaQuery, [product_id]);
   },
-  insertReview: (
-    client,
-    {
-      product_id,
-      rating,
-      name: reviewer_name,
-      email,
-      summary,
-      body,
-      response,
-      created_at,
-      reported = false,
-      recommend = false,
-      helpfulness = 0,
-    }
-  ) => {
+  insertReview: (client, review) => {
     let x = new Date();
-    created_at = created_at || x.getTime();
+    let time = review.created_at || x.getTime();
+    let reported = review.reported || false;
+    let recommend = review.recommend || false;
+    let helpfulness = review.helpfulness || 0;
     let values = [
-      product_id,
-      rating,
-      reviewer_name,
-      email,
-      summary,
-      body,
-      response,
-      created_at,
+      review.product_id,
+      review.rating,
+      review.name,
+      review.email,
+      review.summary,
+      review.body,
+      review.response,
+      time,
       reported,
       recommend,
       helpfulness,
@@ -73,10 +60,10 @@ module.exports = {
       return pool.query(queryStrings.insertCharReviewsQuery, values);
     }
   },
-  reportReview: (product_id) => {
-    return pool.query(queryStrings.reportReviewQuery, [product_id]);
+  reportReview: (review_id) => {
+    return pool.query(queryStrings.reportReviewQuery, [review_id]);
   },
-  incrementHelpful: (product_id) => {
-    return pool.query(queryStrings.incrementHelpfulQuery, [product_id]);
+  incrementHelpful: (review_id) => {
+    return pool.query(queryStrings.incrementHelpfulQuery, [review_id]);
   },
 };

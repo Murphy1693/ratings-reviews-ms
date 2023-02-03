@@ -1,9 +1,15 @@
 module.exports = {
-  getReviewsQuery: `
+  sortQueries: {
+    helpful: `helpfulness DESC`,
+    newest: "created_at DESC",
+    relevant: `helpfulness DESC, created_at DESC`,
+  },
+  // function to allow string interpolation for ORDER BY clause
+  getReviewsQuery: (sortMethod) => `
   SELECT
     JSON_BUILD_OBJECT(
       'count', COUNT(results),
-      'page', $5::int,
+      'page', $4::int,
       'product_id', $1,
       'results', JSON_AGG(results)
     ) as data
@@ -25,7 +31,7 @@ module.exports = {
       GROUP BY
         r.id
       ORDER BY
-        $4
+        ${module.exports.sortQueries[sortMethod] || "id ASC"}
       LIMIT
         $2
       OFFSET
@@ -135,19 +141,14 @@ module.exports = {
       review_id
     )
   VALUES ($1, $2, $3)`,
-  reportReviewQuery: `
+  incrementHelpfulQuery: `
   UPDATE reviews
     SET helpfulness = helpfulness + 1
   WHERE
     id = $1;`,
-  incrementHelpfulQuery: `
+  reportReviewQuery: `
   UPDATE reviews
     SET reported = true
   WHERE
     id = $1;`,
-  sortQueries: {
-    helpful: `helpfulness DESC`,
-    newest: "created at DESC",
-    relevant: `helpfulness DESC, created_at DESC`,
-  },
 };

@@ -3,7 +3,6 @@ const pool = require("../database");
 
 module.exports = {
   getReviews: (req, res) => {
-    console.log("get reviews", req.query);
     models
       .getReviewsByProductId(req.query)
       .then((queryResult) => {
@@ -64,22 +63,25 @@ module.exports = {
 
   reportReview: (req, res) => {
     models
-      .reportReview(req.params.product_id)
+      .reportReview(req.params.review_id)
       .then(() => {
+        console.log(req.params);
         res.status(204).end();
       })
       .catch((err) => {
+        console.log(err);
         res.status(400).end();
       });
   },
 
   findReviewHelpful: function (req, res) {
     models
-      .incrementHelpful(req.params.product_id)
+      .incrementHelpful(req.params.review_id)
       .then(() => {
         res.status(204).end();
       })
       .catch((err) => {
+        console.log(err);
         res.status(400).end();
       });
   },
