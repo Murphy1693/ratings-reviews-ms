@@ -14,9 +14,6 @@ CREATE TABLE reviews (
 );
 
 CREATE INDEX reviews_product_id_idx ON "reviews"(product_id);
-CREATE INDEX reviews_product_id_created_at_idx ON "reviews"(product_id, created_at);
-CREATE INDEX reviews_product_id_rating_idx ON "reviews"(product_id, rating);
-CREATE INDEX reviews_product_id_helpfulness_idx ON "reviews"(product_id, helpfulness);
 
 CREATE TABLE photos (
   id SERIAL PRIMARY KEY,

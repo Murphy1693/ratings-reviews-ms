@@ -7,7 +7,6 @@ specifiers:
   jest: ^29.3.1
   nodemon: ^2.0.20
   pg: ^8.8.0
-  pg-promise: ^11.0.2
   supertest: ^6.3.3
 
 dependencies:
@@ -16,7 +15,6 @@ dependencies:
   express: 4.18.2
   nodemon: 2.0.20
   pg: 8.8.0
-  pg-promise: 11.0.2
 
 devDependencies:
   jest: 29.3.1
@@ -783,11 +781,6 @@ packages:
   /asap/2.0.6:
     resolution: {integrity: sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==}
     dev: true
-
-  /assert-options/0.8.0:
-    resolution: {integrity: sha512-qSELrEaEz4sGwTs4Qh+swQkjiHAysC4rot21+jzXU86dJzNG+FDqBzyS3ohSoTRf4ZLA3FSwxQdiuNl5NXUtvA==}
-    engines: {node: '>=10.0.0'}
-    dev: false
 
   /asynckit/0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -2388,29 +2381,12 @@ packages:
     engines: {node: '>=4.0.0'}
     dev: false
 
-  /pg-minify/1.6.2:
-    resolution: {integrity: sha512-1KdmFGGTP6jplJoI8MfvRlfvMiyBivMRP7/ffh4a11RUFJ7kC2J0ZHlipoKiH/1hz+DVgceon9U2qbaHpPeyPg==}
-    engines: {node: '>=8.0'}
-    dev: false
-
   /pg-pool/3.5.2_pg@8.8.0:
     resolution: {integrity: sha512-His3Fh17Z4eg7oANLob6ZvH8xIVen3phEZh2QuyrIl4dQSDVEabNducv6ysROKpDNPSD+12tONZVWfSgMvDD9w==}
     peerDependencies:
       pg: '>=8.0'
     dependencies:
       pg: 8.8.0
-    dev: false
-
-  /pg-promise/11.0.2:
-    resolution: {integrity: sha512-XSTfU+aRUPjx7FUzGwBfLK/LpJLLMbB1TE6taBpVZBj4kqjuxVdvrSoH6EYF8PPO9OOGIaSK/E8b733b82x7cw==}
-    engines: {node: '>=14.0'}
-    dependencies:
-      assert-options: 0.8.0
-      pg: 8.8.0
-      pg-minify: 1.6.2
-      spex: 3.2.0
-    transitivePeerDependencies:
-      - pg-native
     dev: false
 
   /pg-protocol/1.5.0:
@@ -2704,11 +2680,6 @@ packages:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
     dev: true
-
-  /spex/3.2.0:
-    resolution: {integrity: sha512-9srjJM7NaymrpwMHvSmpDeIK5GoRMX/Tq0E8aOlDPS54dDnDUIp30DrP9SphMPEETDLzEM9+4qo+KipmbtPecg==}
-    engines: {node: '>=4.5'}
-    dev: false
 
   /split2/4.1.0:
     resolution: {integrity: sha512-VBiJxFkxiXRlUIeyMQi8s4hgvKCSjtknJv/LVYbrgALPwf5zSKmEwV9Lst25AkvMDnvxODugjdl6KZgwKM1WYQ==}
