@@ -9,4 +9,8 @@ const pool = new Pool({
   database: process.env.DB_NAME,
 });
 
+pool.query(`SELECT * FROM reviews WHERE id = 1`).then((data) => {
+  console.log(data);
+});
+
 module.exports = pool;

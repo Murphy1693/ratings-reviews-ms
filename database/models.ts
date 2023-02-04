@@ -1,5 +1,7 @@
-const pool = require("./index.js");
+const db = require("./index.js");
 const queryStrings = require("./queryStrings.js");
+
+type getReviewsModel = () => Promise<any>;
 
 module.exports = {
   getReviewsByProductId: ({
@@ -9,7 +11,7 @@ module.exports = {
     page = 1,
     offset = page * count - count,
   }) => {
-    return pool.query(queryStrings.getReviewsQuery(sort), [
+    return db.query(queryStrings.getReviewsQuery(sort), [
       product_id,
       count,
       offset,
@@ -17,7 +19,7 @@ module.exports = {
     ]);
   },
   getMetaByProductId: (product_id) => {
-    return pool.query(queryStrings.getMetaQuery, [product_id]);
+    return db.query(queryStrings.getMetaQuery, [product_id]);
   },
   insertReview: (client, review) => {
     let x = new Date();
@@ -41,7 +43,7 @@ module.exports = {
     if (client) {
       return client.query(queryStrings.insertReviewQuery, values);
     } else {
-      return pool.query(queryStrings.insertReviewQuery, values);
+      return db.query(queryStrings.insertReviewQuery, values);
     }
   },
   insertPhoto: (client, url, review_id) => {
@@ -49,7 +51,7 @@ module.exports = {
     if (client) {
       return client.query(queryStrings.insertPhotoQuery, values);
     } else {
-      return pool.query(queryStrings.insertPhotoQuery, values);
+      return db.query(queryStrings.insertPhotoQuery, values);
     }
   },
   insertCharReviews: (client, { char_id, char_value, review_id }) => {
@@ -57,13 +59,13 @@ module.exports = {
     if (client) {
       return client.query(queryStrings.insertCharReviewsQuery, values);
     } else {
-      return pool.query(queryStrings.insertCharReviewsQuery, values);
+      return db.query(queryStrings.insertCharReviewsQuery, values);
     }
   },
   reportReview: (review_id) => {
-    return pool.query(queryStrings.reportReviewQuery, [review_id]);
+    return db.query(queryStrings.reportReviewQuery, [review_id]);
   },
   incrementHelpful: (review_id) => {
-    return pool.query(queryStrings.incrementHelpfulQuery, [review_id]);
+    return db.query(queryStrings.incrementHelpfulQuery, [review_id]);
   },
 };
