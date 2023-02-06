@@ -25,7 +25,7 @@ interface Characteristics {
 export interface Review {
   product_id: number;
   rating: number;
-  reviewer_name: string;
+  name: string;
   email: string;
   summary: string;
   body: string | null;
@@ -98,7 +98,7 @@ const validators = {
       res.status(500).end();
       return;
     }
-    if (typeof req.body.reviewer_name !== "string") {
+    if (typeof req.body.name !== "string") {
       res.status(500).end();
       return;
     }
@@ -145,17 +145,17 @@ const validators = {
     }
     if (!Array.isArray(req.body.characteristics)) {
       res.status(500).end();
+      return;
     } else if (req.body.characteristics.length) {
       for (let i = 0; i < req.body.characteristics.length; i++) {
         if (
           typeof req.body.characteristics[i].char_id !== "number" ||
-          typeof req.body.characteristics[i].char_value !== "number" ||
-          typeof req.body.characteristics[i].review_id !== "number"
+          typeof req.body.characteristics[i].char_value !== "number"
         ) {
           res.status(500).end();
           return;
         }
-        for (const k in req.body.characterisics[i]) {
+        for (const k in req.body.characteristics[i]) {
           if (typeof req.body.characteristics[i][k] !== "number") {
             res.status(500).end();
             return;

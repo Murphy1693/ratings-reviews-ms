@@ -3,6 +3,7 @@
 <div align="center" width="100%">
   <img src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB" />
   <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://camo.githubusercontent.com/6cf9abe9d706421df40ff4feff208a5728df2b77f9eb21f24d09df00a0d69203/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f547970655363726970742d3030374143433f7374796c653d666f722d7468652d6261646765266c6f676f3d74797065736372697074266c6f676f436f6c6f723d7768697465">
 </div>
 
 ### Motivation
@@ -11,15 +12,21 @@ This is the API of a microservice for an e-commerce clothing and accessories web
 
 There is virtually no processing aside from opt-in server-side validation in this repository.  All read queries are within a few milliseconds and write queries (transactions) in tens of milliseconds, accessing a database with tens of millions of records.  Query responses are assembled entirely through PostgreSQL.
 
-#### API
+### API
+
+#### GET
 
 ##### /reviews
 
-Query Params:
+Query:
 - `product_id: Number` (required)
 - `count: Number` (default 5)
 - `page: Number` (default 1)
 - `sort: "newest" | "helpful" | "relevant"` (default "newest")
+
+Status Codes:
+- 200 (success)
+- 500 (error)
 
 `.get(".../reviews?product_id=4&sort=helpful")`
 
@@ -104,9 +111,9 @@ Query Params:
 }
 ```
 
-##### reviews/meta
+##### /reviews/meta
 
-Query Params:
+Params:
 - `product_id: Number` (required)
 
 `.get(".../reviews/meta?product_id=4")`
@@ -144,3 +151,63 @@ Query Params:
   }
 }
 ```
+
+#### POST
+
+##### /reviews
+
+Status Codes:
+- 201 (success)
+- 500 (error)
+
+`.post(".../reviews")`
+
+Body:
+
+```
+{
+  product_id: Number,
+  rating: Number,
+  name: String,
+  email: String,
+  summary: String,
+  body: String,
+  response: String,
+  reported: Boolean,
+  recommend: Boolean,
+  helpfulness: Number,
+  photos: [
+    url: String
+  ],
+  characteristics: [
+    {
+      char_id: Number,
+      char_value: Number,
+    }
+  ]
+}
+```
+
+#### PUT
+
+##### /reviews/:review_id/reported
+
+Params:
+- `review_id: Number` (required)
+
+Status Codes:
+- 204 (success)
+- 500 (error)
+
+`.put(".../reviews/:review_id/reported")`
+
+##### /reviews/:review_id/helpful
+
+Params:
+- `review_id: Number` (required)
+
+Status Codes:
+- 204 (success)
+- 500 (error)
+
+`.put(".../reviews/:review_id/helpful")`

@@ -114,7 +114,7 @@ const models: modelsModule = {
     let values = [
       review.product_id,
       review.rating,
-      review.reviewer_name,
+      review.name,
       review.email,
       review.summary,
       review.body,

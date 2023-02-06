@@ -52,6 +52,7 @@ const controllers = {
         ),
         Promise.all(
           req.body.characteristics.map((charsObj) => {
+            console.log(charsObj);
             return models.insertCharReviews(client, {
               char_id: charsObj.char_id,
               char_value: charsObj.char_value,
