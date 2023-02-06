@@ -1,12 +1,27 @@
-const models = require("../database/models.js");
-const pool = require("../database");
+// const models = require("../database/models.js");
+// const pool = require("../database");
+import models, { getReviewsQueryParams } from "../database/models.js";
+import db from "../database/index.js";
+import { Request, Response, NextFunction } from "express";
+import {
+  GetMetaQuery,
+  GetReviewsQuery,
+  PostReviewBody,
+  UpdateReview,
+} from "./validators.js";
 
-module.exports = {
-  getReviews: (req, res) => {
+const controllers = {
+  getReviews: (req: GetReviewsQuery, res: Response) => {
+    console.log(req.query.product_id);
     models
-      .getReviewsByProductId(req.query)
+      .getReviewsByProductId({
+        product_id: parseInt(req.query.product_id),
+        count: parseInt(req.query.count),
+        sort: req.query.sort,
+        page: parseInt(req.query.page),
+      })
       .then((queryResult) => {
-        res.status(200).send(queryResult.rows[0].data);
+        res.status(200).send(queryResult.rows[0]);
       })
       .catch((err) => {
         console.log(err);
@@ -14,11 +29,12 @@ module.exports = {
       });
   },
 
-  getMeta: (req, res) => {
+  getMeta: (req: GetMetaQuery, res: Response) => {
+    console.log(req.query.product_id);
     models
-      .getMetaByProductId(req.query.product_id)
+      .getMetaByProductId(parseInt(req.query.product_id))
       .then((queryResult) => {
-        res.status(200).send(queryResult.rows[0].data);
+        res.status(200).send(queryResult.rows[0]);
       })
       .catch((err) => {
         console.log(err);
@@ -26,8 +42,8 @@ module.exports = {
       });
   },
 
-  postReview: async (req, res) => {
-    const client = await pool.connect();
+  postReview: async (req: PostReviewBody, res: Response) => {
+    const client = await db.connect();
     try {
       await client.query("BEGIN");
       let queryResult = await models.insertReview(client, req.body);
@@ -61,9 +77,9 @@ module.exports = {
     }
   },
 
-  reportReview: (req, res) => {
+  reportReview: (req: UpdateReview, res: Response) => {
     models
-      .reportReview(req.params.review_id)
+      .reportReview(parseInt(req.params.review_id))
       .then(() => {
         console.log(req.params);
         res.status(204).end();
@@ -74,9 +90,9 @@ module.exports = {
       });
   },
 
-  findReviewHelpful: function (req, res) {
+  findReviewHelpful: (req: UpdateReview, res: Response) => {
     models
-      .incrementHelpful(req.params.review_id)
+      .incrementHelpful(parseInt(req.params.review_id))
       .then(() => {
         res.status(204).end();
       })
@@ -86,3 +102,5 @@ module.exports = {
       });
   },
 };
+
+export default controllers;

@@ -1,18 +1,34 @@
-module.exports = {
+import { getReviewsQueryParams } from "./models.js";
+
+type queryStringsModule = {
+  sortQueries: {
+    helpful: string;
+    newest: string;
+    relevant: string;
+  };
+  getReviewsQuery: (sortMethod: getReviewsQueryParams["sort"]) => string;
+  getMetaQuery: string;
+  insertReviewQuery: string;
+  insertPhotoQuery: string;
+  insertCharReviewsQuery: string;
+  incrementHelpfulQuery: string;
+  reportReviewQuery: string;
+};
+
+const queryStrings: queryStringsModule = {
   sortQueries: {
     helpful: `helpfulness DESC`,
     newest: "created_at DESC",
     relevant: `helpfulness DESC, created_at DESC`,
   },
   // function to allow string interpolation for ORDER BY clause
-  getReviewsQuery: (sortMethod) => `
+  getReviewsQuery: function (sortMethod) {
+    return `
   SELECT
-    JSON_BUILD_OBJECT(
-      'count', COUNT(results),
-      'page', $4::int,
-      'product_id', $1,
-      'results', JSON_AGG(results)
-    ) as data
+      COUNT(results),
+      $4 as page,
+      $1 as product_id,
+      JSON_AGG(results) as results
   FROM
     (
       SELECT
@@ -31,13 +47,14 @@ module.exports = {
       GROUP BY
         r.id
       ORDER BY
-        ${module.exports.sortQueries[sortMethod] || "id ASC"}
+        ${this.sortQueries[sortMethod]}
       LIMIT
         $2
       OFFSET
         $3
     ) results
-  `,
+  `;
+  },
   getMetaQuery: `
   WITH
     ratings_table AS
@@ -83,32 +100,28 @@ module.exports = {
           c.characteristic
       )
   SELECT
+    $1 AS product_id,
+    COALESCE(
+      (
+        SELECT
+          JSON_OBJECT_AGG(
+            characteristics_average_table.characteristic,
+            JSON_BUILD_OBJECT('id', characteristics_average_table.char_id, 'value', characteristics_average_table.avg)
+          )
+        FROM
+          characteristics_average_table),
+        '{}'
+      ) AS characteristics,
     JSON_BUILD_OBJECT(
-      'product_id', $1,
-      'characteristics',
-        COALESCE(
-          (
-            SELECT
-              JSON_OBJECT_AGG(
-                characteristics_average_table.characteristic,
-                JSON_BUILD_OBJECT('id', characteristics_average_table.char_id, 'value', characteristics_average_table.avg)
-              )
-            FROM
-              characteristics_average_table),
-            '{}'
-          ),
-      'recommend',
-        JSON_BUILD_OBJECT(
-          'true', COALESCE((SELECT recommend_count FROM recommend_table WHERE recommend = true), 0),
-          'false', COALESCE((SELECT recommend_count FROM recommend_table WHERE recommend = false), 0)),
-      'ratings',
-        JSON_BUILD_OBJECT(
-          '1', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 1), 0),
-          '2', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 2), 0),
-          '3', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 3), 0),
-          '4', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 4), 0),
-          '5', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 5), 0)
-  )) as data;`,
+      'true', COALESCE((SELECT recommend_count FROM recommend_table WHERE recommend = true), 0),
+      'false', COALESCE((SELECT recommend_count FROM recommend_table WHERE recommend = false), 0)) AS recommend,
+    JSON_BUILD_OBJECT(
+      '1', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 1), 0),
+      '2', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 2), 0),
+      '3', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 3), 0),
+      '4', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 4), 0),
+      '5', COALESCE((SELECT ratings_count FROM ratings_table WHERE rating = 5), 0)
+  ) AS rating;`,
   insertReviewQuery: `
   INSERT INTO
     reviews (
@@ -152,3 +165,5 @@ module.exports = {
   WHERE
     id = $1;`,
 };
+
+export default queryStrings;
