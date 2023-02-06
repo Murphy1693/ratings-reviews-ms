@@ -24,35 +24,35 @@ const queryStrings: queryStringsModule = {
   // function to allow string interpolation for ORDER BY clause
   getReviewsQuery: function (sortMethod) {
     return `
-  SELECT
+    SELECT
       COUNT(results),
       $4 as page,
       $1 as product_id,
       JSON_AGG(results) as results
-  FROM
-    (
-      SELECT
-        r.*,
-        COALESCE(JSON_AGG(
-          JSON_BUILD_OBJECT('id', p.id, 'url', p.url)) FILTER (WHERE p.id IS NOT NULL), '[]')
-        as photos
-      FROM
-        reviews r
-      LEFT JOIN
-        photos p
-      ON
-        r.id = p.review_id
-      WHERE
-        r.product_id = $1
-      GROUP BY
-        r.id
-      ORDER BY
-        ${this.sortQueries[sortMethod]}
-      LIMIT
-        $2
-      OFFSET
-        $3
-    ) results
+    FROM
+      (
+        SELECT
+          r.*,
+          COALESCE(JSON_AGG(
+            JSON_BUILD_OBJECT('id', p.id, 'url', p.url)) FILTER (WHERE p.id IS NOT NULL), '[]')
+          as photos
+        FROM
+          reviews r
+        LEFT JOIN
+          photos p
+        ON
+          r.id = p.review_id
+        WHERE
+          r.product_id = $1
+        GROUP BY
+          r.id
+        ORDER BY
+          ${this.sortQueries[sortMethod]}
+        LIMIT
+          $2
+        OFFSET
+          $3
+      ) results
   `;
   },
   getMetaQuery: `
@@ -138,7 +138,7 @@ const queryStrings: queryStringsModule = {
       helpfulness
     )
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-      RETURNING id`,
+  RETURNING id`,
   insertPhotoQuery: `
   INSERT INTO
     photos (
