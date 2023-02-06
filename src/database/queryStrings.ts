@@ -25,14 +25,25 @@ const queryStrings: queryStringsModule = {
   getReviewsQuery: function (sortMethod) {
     return `
     SELECT
-      COUNT(results),
-      $4 as page,
-      $1 as product_id,
+      COUNT(results)::int,
+      $4::int as page,
+      $1::int as product_id,
       JSON_AGG(results) as results
     FROM
       (
         SELECT
-          r.*,
+          r.id,
+          r.product_id,
+          r.rating,
+          r.reviewer_name AS name,
+          r.email,
+          r.summary,
+          r.body,
+          r.response,
+          TO_TIMESTAMP(r.created_at/1000) AS date,
+          r.reported,
+          r.recommend,
+          r.helpfulness,
           COALESCE(JSON_AGG(
             JSON_BUILD_OBJECT('id', p.id, 'url', p.url)) FILTER (WHERE p.id IS NOT NULL), '[]')
           as photos
